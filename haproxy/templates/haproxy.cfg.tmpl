@@ -35,7 +35,8 @@ frontend http *:80
 #
 {% for service in services %}
 # {{service}}
-backend {{ service }}
+backend {{ service }}_backend
+    mode http
     option httpclose
     option forwardfor
     {% for backend in services[service].backends %}
