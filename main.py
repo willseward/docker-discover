@@ -48,6 +48,9 @@ def get_services():
         if container == "port":
             endpoints["port"] = i.value
             continue
+        if container == "dns":
+            endpoints["dns"] = i.value
+            continue
         endpoints["backends"].append(dict(name=container, addr=i.value))
     return services
 

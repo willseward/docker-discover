@@ -17,11 +17,28 @@ listen stats :1936
     stats hide-version
     #stats realm Haproxy\ Statistics
     stats uri /
-    #stats auth Username:Password
+    stats auth willseward:Password
 
+#
+# Frontend 
+#
+frontend http *:80
+    mode http
 {% for service in services %}
-listen {{ service }}
-    bind *:{{services[service].port}}
+    # services for {{ service }} @ {{ services[service].dns }}.urskul.com
+    acl host_{{ services[service].dns }} hdr(host) -i {{ services[service].dns }}.urskul.com
+    use_backend {{ services[service].dns }}_backend if host_{{ services[service].dns }}
+{% endfor %}
+
+#
+# Backends
+#
+{% for service in services %}
+# {{service}}
+backend {{ service }}
+    option httpclose
+    option forwardfor
     {% for backend in services[service].backends %}
-    server {{ backend.name }} {{ backend.addr }} check inter 2s rise 3 fall 2{% endfor %}
+    server {{ backend.name }} {{ backend.addr }} check inter 2s rise 3 fall 2
+    {% endfor %}
 {% endfor %}
