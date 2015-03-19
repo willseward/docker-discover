@@ -7,6 +7,7 @@ from subprocess import call
 import signal
 import sys
 import time
+import json
 
 env = Environment(loader=PackageLoader('haproxy', 'templates'))
 POLL_TIMEOUT=5
@@ -49,7 +50,7 @@ def get_services():
             endpoints["port"] = i.value
             continue
         if container == "dns":
-            endpoints["dns"] = i.value
+            endpoints["dns"] = json.loads(i.value)
             continue
         endpoints["backends"].append(dict(name=container, addr=i.value))
     return services

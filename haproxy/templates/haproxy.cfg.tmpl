@@ -25,9 +25,10 @@ listen stats :1936
 frontend http *:80
     mode http
 {% for service in services %}
-    # services for {{ service }} @ {{ services[service].dns }}.urskul.com
-    acl host_{{ services[service].dns }} hdr(host) -i {{ services[service].dns }}.urskul.com
-    use_backend {{ services[service].dns }}_backend if host_{{ services[service].dns }}
+    {% for dns in services[service].dns %}
+    acl host_{{ service }} hdr(host) -i {{ dns }}
+    {% endfor %}
+    use_backend {{ service }}_backend if host_{{ service }}
 {% endfor %}
 
 #
