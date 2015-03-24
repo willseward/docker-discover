@@ -50,7 +50,7 @@ def get_services():
             endpoints["port"] = i.value
             continue
         if container == "dns":
-            endpoints["dns"] = json.loads(i.value)
+            endpoints["dns"] = i.value.split(",")
             continue
         endpoints["backends"].append(dict(name=container, addr=i.value))
     return services
